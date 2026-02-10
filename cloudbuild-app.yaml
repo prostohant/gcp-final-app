@@ -1,0 +1,25 @@
+steps:
+# Step 1: Install dependencies & Run Tests
+# We install dependencies from the file and then run pytest.
+# If tests fail, the pipeline stops here.
+
+# app
+- name: 'python:3.14-slim'
+  entrypoint: 'bash'
+  args:
+    - '-c'
+    - pip install -r ./app/requirements.txt
+# Step 2: Build Docker Image
+# We use variables for Project ID and Commit SHA to make the config reusable
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-app-repo/app:$SHORT_SHA', 'app/']
+
+# Step 3: Push Image to Registry
+# Upload the tested image to Artifact Registry
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-app-repo/app:$SHORT_SHA']
+
+# Mandatory logging configuration for custom Service Accounts
+options:
+  logging: CLOUD_LOGGING_ONLY
