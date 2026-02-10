@@ -85,6 +85,7 @@ async def handle_event(request: Request):
         table_ref = f"{PROJECT_ID}.{DATASET_ID}.{TABLE_ID}"
         errors = bq_client.insert_rows_json(table_ref, rows_to_insert)
 
+
         if errors:
             print(f"BQ Errors: {errors}")
             return {"status": "error", "errors": str(errors)}

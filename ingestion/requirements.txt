@@ -5,4 +5,3 @@ google-cloud-bigquery
 google-cloud-aiplatform
 pypdf
 langchain-text-splitters
-
