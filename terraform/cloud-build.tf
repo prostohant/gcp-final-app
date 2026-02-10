@@ -1,10 +1,20 @@
-resource "google_cloudbuild_trigger" "trigger-ingestor" {
-  name =  "building-ingestor"
-  location = var.region
-  source_to_build {
-    uri       = "hhttps://github.com/prostohant/gcp-homework-ci.git"
-    ref       = "refs/heads/main"
-    repo_type = "GITHUB"
+
+resource "google_cloudbuild_trigger" "ingestion_trigger" {
+  name        = "ingestion-dir-trigger"
+  project = var.project_id
+  location      = var.region
+  service_account = module.service_accounts.id
+  description = "Trigger for changes in the ingestion directory"
+
+  github {
+    owner = "prostohant"
+    name  = "gcp-homework-ci"
+    push {
+      branch = "^main$"
+    }
   }
+  include_build_logs = "INCLUDE_BUILD_LOGS_WITH_STATUS"
+  included_files = ["ingestion/**"]
   filename = "cloudbuild-ingestor.yaml"
+
 }
