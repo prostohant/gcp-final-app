@@ -20,6 +20,12 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-app-repo/app:$SHORT_SHA']
 
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['tag', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-app-repo/app:$SHORT_SHA', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-app-repo/app:latest']
+
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-app-repo/app:latest']
+
 # Mandatory logging configuration for custom Service Accounts
 options:
   logging: CLOUD_LOGGING_ONLY

@@ -35,5 +35,5 @@ resource "google_cloudbuild_trigger" "app_trigger" {
   }
   include_build_logs = "INCLUDE_BUILD_LOGS_WITH_STATUS"
   included_files = ["app/**"]
-  filename = "cloudbuild-ingestor.yaml"
+  filename = "cloudbuild-app.yaml"
 }
