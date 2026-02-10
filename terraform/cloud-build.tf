@@ -8,7 +8,7 @@ resource "google_cloudbuild_trigger" "ingestion_trigger" {
 
   github {
     owner = "prostohant"
-    name  = "gcp-homework-ci"
+    name  = "gcp-final-app"
     push {
       branch = "^main$"
     }
