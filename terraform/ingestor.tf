@@ -7,4 +7,9 @@ module "gcs_bucket" {
 }
 #event arc
 #Cloud run 
+  #depends on
+    # Servive account
+    # "google_artifact_registry_repository" "my-repo"
+    # repo us-central1-docker.pkg.dev/$PROJECT_ID/my-app-repo/ingestion:
+
 #vertex AI
