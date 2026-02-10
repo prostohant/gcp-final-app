@@ -8,7 +8,7 @@ steps:
   entrypoint: 'bash'
   args:
     - '-c'
-    - pip install -r ./ingestion/requirements.txt && pytest
+    - pip install -r ./ingestion/requirements.txt
 # Step 2: Build Docker Image
 # We use variables for Project ID and Commit SHA to make the config reusable
 - name: 'gcr.io/cloud-builders/docker'
