@@ -12,7 +12,7 @@ steps:
 # Step 2: Build Docker Image
 # We use variables for Project ID and Commit SHA to make the config reusable
 - name: 'gcr.io/cloud-builders/docker'
-  args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-app-repo/ingestion:$SHORT_SHA', '.']
+  args: ['build', '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/my-app-repo/ingestion:$SHORT_SHA', 'ingestion/']
 
 # Step 3: Push Image to Registry
 # Upload the tested image to Artifact Registry
