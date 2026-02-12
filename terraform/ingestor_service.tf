@@ -8,12 +8,16 @@ module "gcs_bucket" {
 
 resource "google_cloud_run_service" "ingestion" {
   name     = "rag-ingestor"
-  location   = var.region
+  location = var.region
 
   template {
     spec {
       containers {
         image = "${google_artifact_registry_repository.my-repo.registry_uri}/ingestion:latest"
+        env {
+          name  = "PROJECT_ID"
+          value = "training-user-a-khlyst"
+        }
       }
     }
   }
@@ -26,7 +30,7 @@ resource "google_cloud_run_service" "ingestion" {
 
 resource "google_eventarc_trigger" "doc_upload_trigger" {
   name     = "doc-upload-trigger"
-  location   = var.region
+  location = var.region
 
   matching_criteria {
     attribute = "bucket"
@@ -34,7 +38,7 @@ resource "google_eventarc_trigger" "doc_upload_trigger" {
   }
   matching_criteria {
     attribute = "type"
-    value = "google.cloud.storage.object.v1.finalized"
+    value     = "google.cloud.storage.object.v1.finalized"
   }
   service_account = "${var.project_number}-compute@developer.gserviceaccount.com"
   destination {

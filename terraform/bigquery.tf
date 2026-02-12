@@ -1,12 +1,7 @@
-variable "project_id" { 
-}
-variable "project_number" {
-}
-
 resource "google_bigquery_dataset" "rag_dataset" {
   dataset_id = "enterprise_rag_v2"
   location   = "US"
-  depends_on = [google_project_service.apis]
+  # depends_on = [google_project_service.apis]
 }
 
 # Table for storing text chunks and their embeddings
@@ -38,13 +33,13 @@ resource "google_bigquery_table" "doc_embeddings" {
 EOF
 }
 
-# Connection for BigQuery ML to invoke Vertex AI models via SQL
+# # Connection for BigQuery ML to invoke Vertex AI models via SQL
 resource "google_bigquery_connection" "vertex_ai_conn" {
   connection_id = "vertex-ai-gen2-conn"
   location      = "US"
   friendly_name = "Connection to Vertex AI"
   cloud_resource {}
-  depends_on = [google_project_service.apis]
+  # depends_on = [google_project_service.apis]
 }
 
 # Grant the service account permission to use Vertex AI
@@ -98,3 +93,28 @@ resource "google_project_iam_member" "eventarc_run_invoker" {
   member = "serviceAccount:${var.project_number}-compute@developer.gserviceaccount.com"
 }
 
+resource "random_string" "random" {
+  length = 5
+  special = false
+}
+
+resource "google_bigquery_job" "create_ml_model_job" {
+  job_id = "create_ml_model_${random_string.random.result}"
+  
+  # Configuration for a query job
+  query {
+    # The BQML SQL query to run
+    query = <<EOF
+        CREATE OR REPLACE MODEL `enterprise_rag_v2.embedding_model_005`
+        REMOTE WITH CONNECTION `us.vertex-ai-gen2-conn`
+        OPTIONS (ENDPOINT = 'text-embedding-005');
+    EOF
+    create_disposition = ""
+    write_disposition  = ""
+    # destination_table {
+    #   dataset_id = google_bigquery_dataset.rag_dataset.dataset_id 
+    #   project_id = var.project_id
+    #   table_id   = "embedding_model_005"
+    # }
+  }
+}

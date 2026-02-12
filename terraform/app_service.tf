@@ -1,6 +1,6 @@
 resource "google_cloud_run_service" "apis" {
   name     = "rag-agent"
-  location   = var.region
+  location = var.region
 
   template {
     spec {

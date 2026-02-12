@@ -11,7 +11,7 @@ variable "zone" {
 }
 
 variable "build_applications" {
-  type = bool
+  type    = bool
   default = false
 }
 # variable "vpc_name" {
