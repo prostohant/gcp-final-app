@@ -9,6 +9,11 @@ variable "region" {
 variable "zone" {
   default = "us-central1-a"
 }
+
+variable "build_applications" {
+  type = bool
+  default = false
+}
 # variable "vpc_name" {
 #   default = "custom-training-vpc"
 # }

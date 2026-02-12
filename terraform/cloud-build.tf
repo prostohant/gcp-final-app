@@ -37,3 +37,25 @@ resource "google_cloudbuild_trigger" "app_trigger" {
   included_files = ["app/**"]
   filename = "cloudbuild-app.yaml"
 }
+
+#  
+resource "terraform_data" "trigger_run_ingestion" {
+  count = var.build_applications ? 1 : 0
+  provisioner "local-exec" {
+    command = <<EOT
+      gcloud builds triggers run ${google_cloudbuild_trigger.ingestion_trigger.name} \
+        --region=${var.region} \
+        --branch=main
+    EOT
+  }
+}
+resource "terraform_data" "trigger_run_app" {
+  count = var.build_applications ? 1 : 0
+  provisioner "local-exec" {
+    command = <<EOT
+      gcloud builds triggers run ${google_cloudbuild_trigger.app_trigger.name} \
+        --region=${var.region} \
+        --branch=main
+    EOT
+  }
+}
