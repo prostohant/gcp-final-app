@@ -5,11 +5,24 @@ module "gcs_bucket" {
   location   = var.region
   name       = "docs-landing-zone-${var.project_id}"
 }
+resource "null_resource" "build_ingestion_image" {
+  provisioner "local-exec" {
+    command = "gcloud builds triggers run ${google_cloudbuild_trigger.ingestion_trigger.name} --branch=main --region=${var.region}"
+  }
+  depends_on = [ google_cloudbuild_trigger.ingestion_trigger ]
+}
+
+resource "null_resource" "wait_for_ingestion_image" {
+  provisioner "local-exec" {
+    command = "until gcloud artifacts docker images describe ${google_artifact_registry_repository.my-repo.registry_uri}/ingestion:latest> /dev/null 2>&1; do sleep 10; done"
+  }
+  depends_on = [ null_resource.build_ingestion_image ]
+}
 
 resource "google_cloud_run_service" "ingestion" {
   name     = "rag-ingestor"
   location = var.region
-
+  depends_on = [ null_resource.wait_for_ingestion_image ]
   template {
     spec {
       containers {
@@ -49,24 +62,3 @@ resource "google_eventarc_trigger" "doc_upload_trigger" {
   }
 
 }
-
-
-
-#depends on
-# Servive account
-# "google_artifact_registry_repository" "my-repo"
-# repo us-central1-docker.pkg.dev/$PROJECT_ID/my-app-repo/ingestion:
-#vertex AI
-
-
-
-#event arc
-
-# output "debug" {
-#  value = "${google_artifact_registry_repository.my-repo.registry_uri}/ingestion:latest"
-# }
-
-# output "debug" {
-#  value = data.google_storage_project_service_account.gcs_account.email_address
-# }
-# data "google_storage_project_service_account" "gcs_account" {}

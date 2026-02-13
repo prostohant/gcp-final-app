@@ -3,7 +3,7 @@ resource "google_cloudbuild_trigger" "ingestion_trigger" {
   name            = "ingestion-dir-trigger"
   project         = var.project_id
   location        = var.region
-  service_account = module.service_accounts.id
+  service_account = module.service_account_builder.id
   description     = "Trigger for changes in the ingestion directory"
 
   github {
@@ -23,7 +23,7 @@ resource "google_cloudbuild_trigger" "app_trigger" {
   name            = "app-dir-trigger"
   project         = var.project_id
   location        = var.region
-  service_account = module.service_accounts.id
+  service_account = module.service_account_builder.id
   description     = "Trigger for changes in the app directory"
 
   github {

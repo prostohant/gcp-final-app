@@ -1,4 +1,4 @@
-module "service_accounts" {
+module "service_account_builder" {
   source     = "terraform-google-modules/service-accounts/google//modules/simple-sa"
   name       = "cicd-builder"
   project_id = var.project_id
